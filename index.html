@@ -100,7 +100,7 @@
       resultBox.innerText = "⏳ Claiming VPS... Please wait.";
 
       try {
-        const res = await fetch("/api/claim", {
+        const res = await fetch("http://65.21.128.94:5000/api/claim", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ip, password }),
