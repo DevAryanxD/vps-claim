@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VPS Claimer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #00ffcc;
+    }
+
+    .card {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00ffcc33;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    input {
+      background: #2a2a2a;
+      color: white;
+    }
+
+    button {
+      background-color: #00ffcc;
+      color: #000;
+      margin-top: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00e6b3;
+    }
+
+    #result {
+      margin-top: 1.5rem;
+      white-space: pre-line;
+      background: #101010;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>VPS Claimer Panel</h1>
+  <div class="card">
+    <label for="ip">VPS IP Address</label>
+    <input type="text" id="ip" placeholder="e.g., 192.168.1.10"/>
+
+    <label for="password">Root Password</label>
+    <input type="password" id="password" placeholder="VPS root password"/>
+
+    <button onclick="claimVPS()">Claim VPS</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function claimVPS() {
+      const ip = document.getElementById("ip").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const resultBox = document.getElementById("result");
+
+      if (!ip || !password) {
+        resultBox.innerText = "⚠️ Enter both IP and password.";
+        return;
+      }
+
+      resultBox.innerText = "⏳ Claiming VPS... Please wait.";
+
+      try {
+        const res = await fetch("/api/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ip, password }),
+        });
+
+        const data = await res.json();
+        resultBox.innerText = data.message || "✅ VPS claimed successfully!";
+      } catch (err) {
+        resultBox.innerText = "❌ Failed to contact backend. Make sure it's running.";
+      }
+    }
+  </script>
+</body>
+</html>
